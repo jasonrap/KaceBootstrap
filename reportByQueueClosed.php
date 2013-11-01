@@ -189,7 +189,7 @@ $(function () {
                 x: -20 //center
             },
             subtitle: {
-                text: 'Source: Kace.westphal.drexel.edu',
+                text: 'Source: $KaceBoxDNS',
                 x: -20
             },
             xAxis: {
