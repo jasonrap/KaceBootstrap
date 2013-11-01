@@ -1,5 +1,23 @@
 <?
 
+
+#edit these lines below
+$queue1Name="Website Updates";
+$queue1Number="";
+
+$queue2Name="System Builds";
+$queue2Number="";
+
+
+#mainQueueNumber and mainQueueName are set within config file
+#end edit
+
+
+
+
+
+
+
 $xAxis="";
 $yAxis="";
 
@@ -7,10 +25,6 @@ $yAxis1="0,";
 
 $yAxis2="";
 
-
-$queue8="System Builds";
-$queue9="Website Updates";
-$queue10="Support Requests";
 
 $dataString="";
 
@@ -23,7 +37,7 @@ month(HD_TICKET.TIME_CLOSED) as month,
 YEAR( HD_TICKET.TIME_CLOSED)as year
 FROM HD_TICKET
 JOIN HD_STATUS ON (HD_STATUS.ID = HD_TICKET.HD_STATUS_ID)
-WHERE (HD_TICKET.HD_QUEUE_ID = 9)
+WHERE (HD_TICKET.HD_QUEUE_ID = $queue1Number)
 AND ((HD_STATUS.NAME like '%closed%')
 AND (HD_STATUS.NAME not like '%Spam%')
 AND (HD_STATUS.NAME not like '%Server Status Report%')
@@ -70,7 +84,7 @@ month(HD_TICKET.TIME_CLOSED) as month,
 YEAR( HD_TICKET.TIME_CLOSED)as year
 FROM HD_TICKET
 JOIN HD_STATUS ON (HD_STATUS.ID = HD_TICKET.HD_STATUS_ID)
-WHERE (HD_TICKET.HD_QUEUE_ID = 8)
+WHERE (HD_TICKET.HD_QUEUE_ID = $queue2Number)
 AND ((HD_STATUS.NAME like '%closed%')
 AND (HD_STATUS.NAME not like '%Spam%')
 AND (HD_STATUS.NAME not like '%Server Status Report%')
@@ -114,7 +128,7 @@ month(HD_TICKET.TIME_CLOSED) as month,
 YEAR( HD_TICKET.TIME_CLOSED)as year
 FROM HD_TICKET
 JOIN HD_STATUS ON (HD_STATUS.ID = HD_TICKET.HD_STATUS_ID)
-WHERE (HD_TICKET.HD_QUEUE_ID = 10)
+WHERE (HD_TICKET.HD_QUEUE_ID = $mainQueue)
 AND ((HD_STATUS.NAME like '%closed%')
 AND (HD_STATUS.NAME not like '%Spam%')
 AND (HD_STATUS.NAME not like '%Server Status Report%')
@@ -208,13 +222,13 @@ $(function () {
                 borderWidth: 0
             },
             series: [{
-                name: 'Website Tickets',
+                name: '<? echo $queue1Name ?>',
                 data: [<? echo $yAxis ?>]
             }, {
-                name: 'System Builds',
+                name: '<? echo $queue2Name ?>',
                 data: [<? echo $yAxis1 ?>]
             }, {
-                name: 'Support Tickets',
+                name: '<? echo $mainQueueName ?>',
                 data: [<? echo $yAxis2 ?>]
             }]
         });

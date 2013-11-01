@@ -1,6 +1,6 @@
 <?php
-#start RT queries
-#for coming up with the total for today, average, and max
+
+
 $currentlyOpen="";
 include ('includes/config.php');
 
@@ -8,9 +8,6 @@ $theDate = date("Y-m-d");
 
 $theYear = date("Y");
 
-#$query = "SELECT COUNT(HD_TICKET.ID) as something from HD_TICKET where HD_Status_ID != 11";
-
-#$query = "SELECT COUNT(HD_TICKET.ID) as something from HD_TICKET where TIME_CLOSED = null";
 
 $query = "select COUNT(NAME) as counted from HD_TICKET Inner Join HD_STATUS on HD_STATUS.ID = HD_TICKET.HD_STATUS_ID
 where (HD_STATUS.NAME not like '%Spam%')

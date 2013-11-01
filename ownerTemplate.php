@@ -1,5 +1,16 @@
 <?
-$user="SomeUser";
+##########################################
+#Key in username to search in SQL for owner
+#note this can be their last name or first name
+#note this will also show up as a h2 tag to indicate whose queue you are looking at.  
+$user="";
+
+##########################################
+
+
+
+
+
 ?>
 
 <h2><? echo $user ?>'s tickets</h2>
@@ -39,7 +50,7 @@ S.FULL_NAME AS Submitter
 FROM HD_TICKET  JOIN HD_STATUS ON (HD_STATUS.ID = HD_TICKET.HD_STATUS_ID) 
 JOIN HD_PRIORITY ON (HD_PRIORITY.ID = HD_TICKET.HD_PRIORITY_ID) 
 LEFT JOIN USER O ON (O.ID = HD_TICKET.OWNER_ID) LEFT JOIN USER S ON (S.ID = HD_TICKET.SUBMITTER_ID) 
-WHERE (HD_TICKET.HD_QUEUE_ID = 10) AND 
+WHERE (HD_TICKET.HD_QUEUE_ID = $mainQueue) AND 
 ((O.FULL_NAME like '%$user%') AND 
 (HD_STATUS.NAME not like '%Closed%'))  
 ORDER BY CREATED desc
@@ -97,7 +108,7 @@ if ($Priority=="Low")
         }
 
 
-echo "<tr><td><a href='http://someKbox/adminui/ticket.php?ID=$ID' target='_blank'>$ID</a> $StatusSpan $PriortySpan</td> \n";
+echo "<tr><td><a href='http://$KaceBoxDNS/adminui/ticket.php?ID=$ID' target='_blank'>$ID</a> $StatusSpan $PriortySpan</td> \n";
 echo "<td>$Title</td>\n";
 echo "<td>$Department</td> \n";
 echo "<td>$Submitter</td> \n";

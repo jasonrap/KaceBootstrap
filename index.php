@@ -65,7 +65,12 @@
 
 <?
 
-
+####################################################
+#This switch statement reads in the URL variables to then include the appropriate files.  
+#you can customize the order in which things are displayed by simply reorganizing the include files.
+#you can also prevent things from being shown by simply commenting them out.                      
+####################################################                    
+                    
 if (isset($_GET['u']))
 {
 $u = $_GET['u'];
@@ -73,34 +78,42 @@ $u = $_GET['u'];
 
 switch ($u) {
 //************************
-case "User1":
-include_once("ownerTemplate.php");
-include_once("ownerUnassigned.php");
-include_once("buildTickets.php");
+case "Jay":
+#note, depending on the order in which a support rep wants to see their personal view, just change the order of the include files accordingly.  
+    include_once("ownerTemplate.php");
+    include_once("ownerUnassigned.php");
+    #the below file is commented out as you have to do an edit within the file before it will work
+    #include_once("buildTickets.php");
 break;
 
 case "User2":
-include_once("ownerTemplate.php");
-include_once("ownerUnassigned.php");
-include_once("buildTickets.php");
+    include_once("ownerTemplate.php");
+    include_once("ownerUnassigned.php");
+    #the below file is commented out as you have to do an edit within the file before it will work
+    #include_once("buildTickets.php");
 break;
 
 
 
 
 case "r":
-include_once("reportKaceCurrentOpen.php");
-echo "<h2>Service Desk Dashboard</h2> <span class='label label-success'>Currently open = $currentlyOpen</span>";
-include_once("reportByQueueClosed.php");
-include_once("reportByDepartment.php");
-include_once("reportByClosed.php");
+#this is the dashboard view.      
+    include_once("reportKaceCurrentOpen.php");
+    echo "<h2>Service Desk Dashboard</h2> <span class='label label-success'>Currently open = $currentlyOpen</span>";
+    #the below file is commented out as you have to do an edit within the file before it will work
+    #include_once("reportByQueueClosed.php"); 
+    include_once("reportByDepartment.php");
+    include_once("reportByClosed.php");
 break;
 
 
 default:
-include_once("ownerUnassigned.php");
-include_once("buildTickets.php");
-include_once("webTickets.php");
+#if nothing is selected show this:
+    include_once("ownerOldest.php");
+    include_once("ownerUnassigned.php");
+    #the below files are commented out as you have to do an edit within the files before they will work
+    #include_once("buildTickets.php");
+    #include_once("webTickets.php");
 break;
 
 }

@@ -1,29 +1,6 @@
-<?
-$user="Unassigned";
-?>
-
-<h2><? echo $user ?> support tickets</h2>
-<table class="table table-striped table-bordered table-condensed">
-  <thead>
-    <tr>
-      <th class=span2>Ticket ID</th>
-      <th class=span2>Title</th>
-        <th class=span2>Department</th>
-        <th class=span2>Submitter</th>
-
-        
-        
-        <th class=span1>Created</th>
-        <th class=span1>Modified</th>
-
-
-    </tr>
-  </thead>
-  <tbody>
-
-
 
 <?
+#shows who owns the oldest ticket
 
  $query1 = "
 SELECT 
@@ -39,11 +16,9 @@ S.FULL_NAME AS Submitter
 FROM HD_TICKET  JOIN HD_STATUS ON (HD_STATUS.ID = HD_TICKET.HD_STATUS_ID) 
 JOIN HD_PRIORITY ON (HD_PRIORITY.ID = HD_TICKET.HD_PRIORITY_ID) 
 LEFT JOIN USER O ON (O.ID = HD_TICKET.OWNER_ID) LEFT JOIN USER S ON (S.ID = HD_TICKET.SUBMITTER_ID) 
-WHERE (HD_TICKET.HD_QUEUE_ID = $mainQueue) AND 
-((O.FULL_NAME is null) AND 
-(HD_STATUS.NAME not like '%Closed%'))  
-ORDER BY CREATED desc
-
+WHERE ((HD_STATUS.NAME not like '%Closed%') and O.FULL_NAME is not null)
+ORDER BY HD_TICKET.ID
+Limit 1
 
 ";
 
@@ -76,44 +51,15 @@ ORDER BY CREATED desc
 
 
 
+echo "<img src='includes/img/50px_golden-star.jpg'>Congratulations $Owner, you own the 
+oldest ticket (<a 
+href='http://$KaceBoxDNS/adminui/ticket.php?ID=$ID' 
+target='_blank'>$ID</a>)!";
 
-
-$StatusSpan="";
-if ($Status=="Stalled")
-        {
-        $StatusSpan="<span class='label label-warning'>$Status</span>";
-        }
-
-
-$PriortySpan="";
-if ($Priority=="High")
-        {
-        $PriortySpan="<span class='label label-important'><i class='icon-exclamation-sign icon-white'></i>High</span>";
-        }
-
-if ($Priority=="Low")
-        {
-        $PriortySpan="<span class='label'>Low</span>";
-        }
-
-
-echo "<tr><td><a href='http://$KaceBoxDNS/adminui/ticket.php?ID=$ID' target='_blank'>$ID</a> $StatusSpan $PriortySpan</td> \n";
-echo "<td>$Title</td>\n";
-echo "<td>$Department</td> \n";
-echo "<td>$Submitter</td> \n";
-
-
-
-
-echo "<td>$Created</td> \n";
-echo "<td>$Modified</td> \n";
-
-echo "</tr> \n";
 $i ++;
 
         }
-                      
-echo "</tbody></table> \n";
+                  
 
 ?>
 

@@ -12,7 +12,7 @@ JOIN HD_STATUS ON (HD_STATUS.ID = HD_TICKET.HD_STATUS_ID)
 WHERE (HD_STATUS.NAME not like '%Server Status Report%') 
 AND ((HD_STATUS.NAME like '%closed%') 
 AND (HD_STATUS.NAME not like '%spam%')
-AND (HD_TICKET.HD_QUEUE_ID = 10)
+AND (HD_TICKET.HD_QUEUE_ID = $mainQueue)
 AND (HD_TICKET.TIME_CLOSED > utc_timestamp() - interval 30 day)
 )
   

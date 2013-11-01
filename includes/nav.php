@@ -2,6 +2,18 @@
 
 include_once("config.php");
 
+######################################
+#used within the navigation, does not have to match what is used within the ownerTemplate.php file
+#does need to match what is in the index.php file, switch statement on line 76ish
+$supportRep1="User1";
+$supportRep2="User2";
+
+
+######################################
+
+
+
+
 $user1="";
 $user2="";
 $d="";
@@ -53,8 +65,8 @@ break;
 
 echo "
 <ul class='nav'>
-              <li class='nav $user1'><a href='index.php?u=user1'>User1</a></li>
-              <li class='nav $user2'><a href='index.php?u=user2'>User2</a></li>
+              <li class='nav $user1'><a href='index.php?u=$supportRep1'>$supportRep1</a></li>
+              <li class='nav $user2'><a href='index.php?u=$supportRep2'>$supportRep2</a></li>
 	      
 <li class='dropdown'>
     <a class='dropdown-toggle ' data-toggle='dropdown' href='#'>

@@ -23,6 +23,10 @@
 
 <?
 
+#NOTE - you will have to change the queue ID number below to match your setup.  
+$buildTicketsQueue="";
+#end edit
+
  $query1 = "
 SELECT
 HD_TICKET.ID as ID,
@@ -39,7 +43,7 @@ JOIN HD_STATUS ON (HD_STATUS.ID = HD_TICKET.HD_STATUS_ID)
 JOIN HD_PRIORITY ON (HD_PRIORITY.ID = HD_TICKET.HD_PRIORITY_ID)
 LEFT JOIN USER O ON (O.ID = HD_TICKET.OWNER_ID)
 LEFT JOIN USER S ON (S.ID = HD_TICKET.SUBMITTER_ID)
-WHERE (HD_TICKET.HD_QUEUE_ID = 8) AND (HD_STATUS.NAME not like '%Closed%')
+WHERE (HD_TICKET.HD_QUEUE_ID = $buildTicketsQueue) AND (HD_STATUS.NAME not like '%Closed%')
 ORDER BY CREATED desc
 
 
@@ -52,7 +56,7 @@ ORDER BY CREATED desc
  while ($i < $num)
  	{
         $ID = mysql_result($result1,$i,"ID");
-	$Title = mysql_result($result1,$i,"Title");
+	    $Title = mysql_result($result1,$i,"Title");
         $Status = mysql_result($result1,$i,"Status");        
         $Department = mysql_result($result1,$i,"Department");
         $Created = mysql_result($result1,$i,"Created");
@@ -62,7 +66,7 @@ ORDER BY CREATED desc
         $Submitter = mysql_result($result1,$i,"Submitter");
 
 
-	$ID = stripslashes($ID);
+	    $ID = stripslashes($ID);
         $Title = stripslashes($Title);
         $Status = stripslashes($Status);
         $Department = stripslashes($Department);
@@ -95,7 +99,7 @@ if ($Priority=="Low")
         }
 
 
-echo "<tr><td><a href='http://someKBOX/adminui/ticket.php?ID=$ID' target='_blank'>$ID</a> $StatusSpan $PriortySpan</td> \n";
+echo "<tr><td><a href='http://$KaceBoxDNS/adminui/ticket.php?ID=$ID' target='_blank'>$ID</a> $StatusSpan $PriortySpan</td> \n";
 echo "<td>$Title</td>\n";
 echo "<td>$Department</td> \n";
 echo "<td>$Submitter</td> \n";
