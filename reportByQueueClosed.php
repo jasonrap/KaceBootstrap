@@ -3,17 +3,14 @@
 
 #edit these lines below
 $queue1Name="Website Updates";
-$queue1Number="";
+$queue1Number="9";
 
 $queue2Name="System Builds";
-$queue2Number="";
+$queue2Number="8";
 
 
 #mainQueueNumber and mainQueueName are set within config file
 #end edit
-
-
-
 
 
 
@@ -24,6 +21,7 @@ $yAxis="";
 $yAxis1="0,";
 
 $yAxis2="";
+
 
 
 $dataString="";
@@ -191,7 +189,7 @@ $(function () {
                 x: -20 //center
             },
             subtitle: {
-                text: 'Source: Kace',
+                text: 'Source: Kace.westphal.drexel.edu',
                 x: -20
             },
             xAxis: {
@@ -208,7 +206,9 @@ $(function () {
                 }]
             },
             tooltip: {
-                formatter: function() {
+                crosshairs: true,
+		
+		formatter: function() {
                         return '<b>'+ this.series.name +'</b><br/>'+
                         this.x +': '+ this.y +' closed';
                 }

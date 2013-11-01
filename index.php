@@ -78,7 +78,7 @@ $u = $_GET['u'];
 
 switch ($u) {
 //************************
-case "Jay":
+case "User1":
 #note, depending on the order in which a support rep wants to see their personal view, just change the order of the include files accordingly.  
     include_once("ownerTemplate.php");
     include_once("ownerUnassigned.php");
@@ -101,7 +101,7 @@ case "r":
     include_once("reportKaceCurrentOpen.php");
     echo "<h2>Service Desk Dashboard</h2> <span class='label label-success'>Currently open = $currentlyOpen</span>";
     #the below file is commented out as you have to do an edit within the file before it will work
-    #include_once("reportByQueueClosed.php"); 
+    include_once("reportByQueueClosed.php"); 
     include_once("reportByDepartment.php");
     include_once("reportByClosed.php");
 break;
