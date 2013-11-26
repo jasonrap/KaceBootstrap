@@ -11,3 +11,7 @@ We used the built in Dell Kace MySQL query account to run quires directly from t
 The code: I am certainly not an expert programmer, so feel free to make any changes you deem appropriate.  You will certainly have to customize which queue(s) you are querying.  Aside from that, it should work.  
 
 Let me know what you think.  
+
+Here is the video on how to implement this: https://vimeo.com/80390378
+
+Posted on ITNinja here http://www.itninja.com/blog/view/twitter-bootstrap-for-kace-service-desk and http://www.itninja.com/blog/view/twitter-bootstrap-for-kace-service-desk-the-video
