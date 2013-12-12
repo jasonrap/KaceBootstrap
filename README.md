@@ -1,10 +1,12 @@
 KaceBootstrap
 =============
 
-===========================================================
+-------------------------------------------------------------------------
 The original project at GitHub: https://github.com/jasonrap/KaceBootstrap
+
 This was only forked due to having no ability to directly communicate with the original author, and I wanted to contribute my changes back to the community.
-===========================================================
+
+-------------------------------------------------------------------------
 
 
 Twitter Bootstrap for Kace Service Desk
@@ -24,8 +26,9 @@ Posted on ITNinja here http://www.itninja.com/blog/view/twitter-bootstrap-for-ka
 
 
 ===========================================================
+
 Files that will need to be edited to fit your organization:
-===========================================================
+
 includes/config.php - REQUIRED. Your KBox's DNS name and your report user's password (from Settings -> General Settings). Also, your main (default) ticket queue ID and name.
 includes/nav.php - REQUIRED. Update the userList array with your users.
 index.php - Pick the reports in the switch() at line 70 that you want to uncomment if you have the need.
