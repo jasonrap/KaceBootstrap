@@ -4,7 +4,7 @@ KaceBootstrap
 -------------------------------------------------------------------------
 The original project at GitHub: https://github.com/jasonrap/KaceBootstrap
 
-This was only forked due to having no ability to directly communicate with the original author, and I wanted to contribute my changes back to the community.
+This was only forked due to having no ability to directly communicate with the original author to collaborate on the original project, and I wanted to contribute my changes back to the community.
 
 -------------------------------------------------------------------------
 
