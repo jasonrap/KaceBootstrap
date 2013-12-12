@@ -1,4 +1,4 @@
-<?
+<?php
 
 $xAxis="";
 $yAxis="";
@@ -8,21 +8,20 @@ $ii = 0;
 include_once ('includes/config.php');
 include_once("reportByClosedAverage.php");
 
-$query="SELECT count(HD_TICKET.ID) as counted,
+$query="
+SELECT count(HD_TICKET.ID) as counted,
 MONTH(TIME_CLOSED) as month,
 DAY(TIME_CLOSED) as day,
 YEAR(TIME_CLOSED) as year
 from
   HD_STATUS Inner Join
   HD_TICKET On HD_TICKET.HD_STATUS_ID = HD_STATUS.ID
-  where (HD_STATUS.NAME = 'Closed')
+  where (HD_STATUS.STATE LIKE '%Closed%')
   and (
        	(HD_STATUS.NAME not like '%spam%')
-AND (TIME_CLOSED >= ( CURDATE() - INTERVAL 30 DAY ))
-)
-
+		AND (TIME_CLOSED >= ( CURDATE() - INTERVAL 30 DAY ))
+	)
 group by DATE(TIME_CLOSED)
-
 ";
 
 
@@ -37,17 +36,16 @@ $num = mysql_num_rows($result);
 
 while ($i < $num)
 {
+	$counted = mysql_result($result,$i,"counted");
+	$month = mysql_result($result,$i,"month");
+	$day = mysql_result($result,$i,"day");
+	$year = mysql_result($result,$i,"year");
+	#echo "$counted on $month/$day/$year<br>";
 
-$counted = mysql_result($result,$i,"counted");
-$month = mysql_result($result,$i,"month");
-$day = mysql_result($result,$i,"day");
-$year = mysql_result($result,$i,"year");
-#echo "$counted on $month/$day/$year<br>";
+	$i++;
 
-$i++;
-
-$xAxis.="'$month/$day', ";
-$yAxis.="$counted, ";
+	$xAxis.="'$month/$day', ";
+	$yAxis.="$counted, ";
 }
 
 #$yAxis=strrev($yAxis);
@@ -61,8 +59,8 @@ $theAverageString="";
 
 while ($ii < $i)
 {
-$theAverageString.="$theAverage, ";
-$ii++;
+	$theAverageString.="$theAverage, ";
+	$ii++;
 }
 $theAverageString=substr($theAverageString,0,-2);
 
@@ -97,7 +95,7 @@ $(function () {
                 x: -20
             },
             xAxis: {
-                categories: [<? echo $xAxis ?>]
+                categories: [<?php echo $xAxis ?>]
             },
             yAxis: {
                 title: {
@@ -125,10 +123,10 @@ $(function () {
             },
             series: [{
                 name: 'Tickets Closed',
-                data: [<? echo $yAxis ?>]
+                data: [<?php echo $yAxis ?>]
 		}, {
 		name: 'Average Closed',
-		data: [<? echo $theAverageString ?>]
+		data: [<?php echo $theAverageString ?>]
 
             
             }]
