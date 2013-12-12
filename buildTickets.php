@@ -1,4 +1,11 @@
+<?php
+//#NOTE - you will have to change the queue ID number below to match your setup.  
+$buildTicketsQueueID=0;
+//#end edit
 
+if ( $buildTicketsQueueID == 0 ) // didn't configure? skip.
+	return;
+?>
 
 <h2>System Builds</h2>
 <table class="table table-striped table-bordered table-condensed">
@@ -21,11 +28,7 @@
 
 
 
-<?
-
-#NOTE - you will have to change the queue ID number below to match your setup.  
-$buildTicketsQueue="";
-#end edit
+<?php
 
  $query1 = "
 SELECT
@@ -43,7 +46,7 @@ JOIN HD_STATUS ON (HD_STATUS.ID = HD_TICKET.HD_STATUS_ID)
 JOIN HD_PRIORITY ON (HD_PRIORITY.ID = HD_TICKET.HD_PRIORITY_ID)
 LEFT JOIN USER O ON (O.ID = HD_TICKET.OWNER_ID)
 LEFT JOIN USER S ON (S.ID = HD_TICKET.SUBMITTER_ID)
-WHERE (HD_TICKET.HD_QUEUE_ID = $buildTicketsQueue) AND (HD_STATUS.NAME not like '%Closed%')
+WHERE (HD_TICKET.HD_QUEUE_ID = $buildTicketsQueueID) AND (HD_STATUS.STATE not like '%Closed%')
 ORDER BY CREATED desc
 
 
@@ -56,7 +59,7 @@ ORDER BY CREATED desc
  while ($i < $num)
  	{
         $ID = mysql_result($result1,$i,"ID");
-	    $Title = mysql_result($result1,$i,"Title");
+		$Title = mysql_result($result1,$i,"Title");
         $Status = mysql_result($result1,$i,"Status");        
         $Department = mysql_result($result1,$i,"Department");
         $Created = mysql_result($result1,$i,"Created");
@@ -65,8 +68,7 @@ ORDER BY CREATED desc
         $Owner = mysql_result($result1,$i,"Owner");	
         $Submitter = mysql_result($result1,$i,"Submitter");
 
-
-	    $ID = stripslashes($ID);
+		$ID = stripslashes($ID);
         $Title = stripslashes($Title);
         $Status = stripslashes($Status);
         $Department = stripslashes($Department);
@@ -111,9 +113,9 @@ echo "<td>$Created</td> \n";
 echo "<td>$Modified</td> \n";
 
 echo "</tr> \n";
-$i ++;
+$i++;
 
-        }
+}
                       
 echo "</tbody></table> \n";
 
