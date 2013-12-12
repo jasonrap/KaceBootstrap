@@ -1,21 +1,19 @@
-<?
+<?php
 include ('includes/config.php');
 
 $data="";
 
 $query1 = "
-
 SELECT count(HD_TICKET.ID) as total,  
 HD_TICKET.CUSTOM_FIELD_VALUE0 as department  
 FROM HD_TICKET  
 JOIN HD_STATUS ON (HD_STATUS.ID = HD_TICKET.HD_STATUS_ID) 
 WHERE (HD_STATUS.NAME not like '%Server Status Report%') 
-AND ((HD_STATUS.NAME like '%closed%') 
+AND ((HD_STATUS.STATE like '%closed%') 
 AND (HD_STATUS.NAME not like '%spam%')
-AND (HD_TICKET.HD_QUEUE_ID = $mainQueue)
+AND (HD_TICKET.HD_QUEUE_ID = $mainQueueID)
 AND (HD_TICKET.TIME_CLOSED > utc_timestamp() - interval 30 day)
 )
-  
 group by department
 order by total
 ";
@@ -84,8 +82,7 @@ $(function () {
                         enabled: true,
 			valueDecimals: 1,
                         color: '#000000',
-			
-            connectorColor: 'white',
+            		connectorColor: 'white',
 
                         formatter: function() {
                             return '<b>'+ this.point.name +'</b>: '+ this.percentage +' %';
@@ -97,7 +94,7 @@ $(function () {
                 type: 'pie',
                 name: 'Browser share',
                 data: [
-                        <? echo $data; ?>
+                        <?php echo $data; ?>
                 ]
             }]
         });
