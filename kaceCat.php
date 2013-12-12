@@ -1,8 +1,8 @@
-
-<?
+<?php
 include ('includes/config.php');
 
-$query="Select
+$query="
+Select
   Count(HD_TICKET.ID) As counted,
   HD_CATEGORY.NAME as name
 From
@@ -12,11 +12,13 @@ From
   where HD_STATUS.NAME != 'Closed'
 Group By
   HD_CATEGORY.NAME
-order by counted desc   ";
+order by counted desc
+";
 
 
 $result = mysql_query($query);
-if (!$result) {
+if (!$result)
+{
     echo 'Could not run query: ' . mysql_error();
     exit;
 }
@@ -26,20 +28,12 @@ $i = 0;
 
 while ($i < $num)
 {
+	$counted = mysql_result($result,$i,"counted");
+	$name = mysql_result($result,$i,"NAME");
 
-$counted = mysql_result($result,$i,"counted");
-$name = mysql_result($result,$i,"NAME");
+	echo "$name = $counted <br>";
 
-echo "$name = $counted <br>";
-
-$i++;
-
+	$i++;
 }
-
 ?>
 shows breakdown by category
-
-
-
-
-
