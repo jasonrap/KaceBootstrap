@@ -2,16 +2,11 @@
 <html lang="en">
   <head>
     
-<? include_once("includes/header.php");
-
+<?php
+	include_once("includes/header.php");
 ?>
-    
-
     <!-- Le styles -->
     <link href="includes/css/bootstrap.css" rel="stylesheet">
-
-
-  
 
     <style>
       body {
@@ -46,14 +41,9 @@
           <a class="brand" href="index.php">Service Desk</a>
           <div class="nav-collapse">
             <ul class="nav">
-           
-              <?
-
+<?php
                 include_once("includes/nav.php");
-                ?>
-	
-
-
+?>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
@@ -61,72 +51,69 @@
     </div>
     <div class="container">
 
-    <meta charset="utf-8" HTTP-EQUIV="refresh" CONTENT="<? echo $refreshRate ?>">
+    <meta charset="utf-8" HTTP-EQUIV="refresh" CONTENT="<?php echo $refreshRate ?>">
 
-<?
+<?php
 
-####################################################
-#This switch statement reads in the URL variables to then include the appropriate files.  
-#you can customize the order in which things are displayed by simply reorganizing the include files.
-#you can also prevent things from being shown by simply commenting them out.                      
-####################################################                    
-                    
 if (isset($_GET['u']))
 {
-$u = $_GET['u'];
+	$u = $_GET['u'];
 }
+else
+	$u = NULL;
 
+####################################################
+# This switch statement reads in the URL variables to then include the appropriate files.  
+# You can customize the order in which things are displayed by simply reorganizing the include files.
+# You can also prevent things from being shown by simply commenting them out.                      
+#################################################### 
 switch ($u) {
 //************************
-case "User1":
-#note, depending on the order in which a support rep wants to see their personal view, just change the order of the include files accordingly.  
-    include_once("ownerTemplate.php");
-    include_once("ownerUnassigned.php");
-    #the below file is commented out as you have to do an edit within the file before it will work
-    #include_once("buildTickets.php");
-break;
-
-case "User2":
-    include_once("ownerTemplate.php");
-    include_once("ownerUnassigned.php");
-    #the below file is commented out as you have to do an edit within the file before it will work
-    #include_once("buildTickets.php");
-break;
-
-
-
 
 case "r":
-#this is the dashboard view.      
-    include_once("reportKaceCurrentOpen.php");
-    echo "<h2>Service Desk Dashboard</h2> <span class='label label-success'>Currently open = $currentlyOpen</span>";
-    #the below file is commented out as you have to do an edit within the file before it will work
-    include_once("reportByQueueClosed.php"); 
-    include_once("reportByDepartment.php");
-    include_once("reportByClosed.php");
+	include_once("reportKaceCurrentOpen.php");
+	echo "<h2>Service Desk Dashboard</h2> <span class='label label-success'>Currently open = $currentlyOpen</span>";
+	#the below file is commented out as you have to do an edit within the file before it will work
+	include_once("reportByQueueClosed.php");
+	include_once("reportByOwner3Month.php");
+	include_once("reportByCategory.php");
+	# we don't use the by-department reporting, so commented out.
+	//include_once("reportByDepartment.php");
+	include_once("reportByClosed.php");
 break;
 
+case 'cat':
+	include_once("reportGridByCategory.php");
+break;
 
 default:
-#if nothing is selected show this:
-    include_once("ownerOldest.php");
-    include_once("ownerUnassigned.php");
-    #the below files are commented out as you have to do an edit within the files before they will work
-    #include_once("buildTickets.php");
-    #include_once("webTickets.php");
+	if ( $u !== NULL )
+	{
+		$user="DefaultUser";
+		if ( isset($_GET['u']) )
+		{
+			$user = strip_tags($_GET['u']);
+			$user = ucwords($user);
+			$user = mysql_escape_string($user);
+		}
+		include_once("reportForOwner12Months.php");
+		include_once("ownerTemplate.php");
+		include_once("reportGridByCategory.php");
+	}
+	else
+	{
+		#if nothing (no user or dashboard) is selected show this:
+		include_once("ownerUnassigned.php");
+		# the below file is commented out as you have to do an edit within the file before it will work
+		# Edit: We don't use a System Builds queue like the original author, and have commented it out.
+		//include_once("buildTickets.php");
+		include_once("openTickets.php");
+		# Edit: We don't use a separate queue for end-user, web-filled tickets (yet) so commented out.
+		//include_once("webTickets.php");
+	}
 break;
-
 }
-
-
 ?>
-
-
-
-
-
-
-
 
     </div> <!-- /container -->
 
@@ -147,7 +134,6 @@ break;
     <script src="includes/js/bootstrap-carousel.js"></script>
     <script src="includes/js/bootstrap-typeahead.js"></script>
     <script src="includes/js/numpad.js" type="text/javascript"></script>
-
 
   </body>
 </html>
