@@ -1579,6 +1579,10 @@ table {
   border-left: 1px solid #dddddd;
 }
 
+.table-head-bordered-bottom th {
+	border-bottom: 1px solid #888888;
+}
+
 .table-bordered caption + thead tr:first-child th,
 .table-bordered caption + tbody tr:first-child th,
 .table-bordered caption + tbody tr:first-child td,
