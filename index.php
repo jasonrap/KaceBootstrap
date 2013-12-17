@@ -80,11 +80,15 @@ case "r":
 	# we don't use the by-department reporting, so commented out.
 	//include_once("reportByDepartment.php");
 	include_once("reportByClosed.php");
-break;
+	break;
 
 case 'cat':
 	include_once("reportGridByCategory.php");
-break;
+	break;
+
+case 'recentlyClosed':
+	include_once("dashboards/recentlyClosedTickets.php");
+	break;
 
 default:
 	if ( $u !== NULL )
@@ -111,7 +115,7 @@ default:
 		# Edit: We don't use a separate queue for end-user, web-filled tickets (yet) so commented out.
 		//include_once("webTickets.php");
 	}
-break;
+	break;
 }
 ?>
 
