@@ -12,7 +12,7 @@ $dbpassword="yourpassword";
 
 #number of main queue
 #used in ownerTemplate.php, ownerUnassigned.php, reportByCategory.php, and reportbyDepartment.php
-$mainQueueID=1;
+$mainQueueID=0;
 $mainQueueName="IT Service Desk";
 
 ########END CONFIG#######
@@ -53,4 +53,28 @@ if ( !($dbh=mysql_connect("$KaceBoxDNS", "R1", "$dbpassword")) )
 	die('I cannot connect to the database because: ' . mysql_error());
 mysql_select_db ("ORG1");
 
+
+#####################################################
+#### Auto poll default queue for main queue ID
+#####################################################
+if ( $mainQueueID == 0 ) // If unconfigured
+{
+	$query = "
+SELECT
+ hdq.ID, hdq.NAME
+FROM SETTINGS
+LEFT JOIN HD_QUEUE hdq
+ ON hdq.ID=SETTINGS.VALUE
+WHERE
+ SETTINGS.NAME='HD_DEFAULT_QUEUE_ID'
+LIMIT 1
+";
+	$results = mysql_query($query);
+	$num = @mysql_numrows($results);
+	if ( $num > 0 && ($row = mysql_fetch_assoc($results)) != NULL && $row['NAME'] != NULL )
+	{
+		$mainQueueID = $row['ID'];
+		$mainQueueName = $row['NAME'];
+	}
+}
 ?>
