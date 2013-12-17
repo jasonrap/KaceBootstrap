@@ -29,7 +29,7 @@ Posted on ITNinja here http://www.itninja.com/blog/view/twitter-bootstrap-for-ka
 
 Files that will need to be edited to fit your organization:
 
-* includes/config.php - REQUIRED. Your KBox's DNS name and your report user's password (from Settings -> General Settings). Also, your main (default) ticket queue ID and name.
+* includes/config.php - REQUIRED. Your KBox's DNS name and your report user's password (from Settings -> General Settings). Also, recommended but not necessary, your main (default) ticket queue ID and name.
 * includes/nav.php - REQUIRED. Update the userList array with your users.
 * index.php - Pick the reports in the switch() at line 70 that you want to uncomment if you have the need.
 * buildTickets.php - if you have a queue for computer builds, otherwise, don't worry.
