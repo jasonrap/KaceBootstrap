@@ -97,6 +97,7 @@ echo "
 		<ul class='dropdown-menu'>
 			<li class='nav '><a href='index.php?u=r'><i class='icon-picture'></i> Service Desk</a></li>
 			<li class='nav '><a href='index.php?u=cat'><i class='icon-picture'></i> Open/Closed by Category</a></li>
+			<li class='nav '><a href='index.php?u=recentlyClosed'><i class='icon-picture'></i> Recently Closed Tickets</a></li>
 		</ul>
 	</li>
 </ul>
