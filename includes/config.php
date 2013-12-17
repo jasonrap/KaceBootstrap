@@ -12,7 +12,7 @@ $dbpassword="yourpassword";
 
 #number of main queue
 #used in ownerTemplate.php, ownerUnassigned.php, reportByCategory.php, and reportbyDepartment.php
-$mainQueueID=0;
+$mainQueueID=0; # leave set to 0 if you want your default queue to be your mainQueue.
 $mainQueueName="IT Service Desk";
 
 ########END CONFIG#######
