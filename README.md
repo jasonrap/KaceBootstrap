@@ -1,6 +1,12 @@
 KaceBootstrap
 =============
 
+Please note this project has been forked and moved to:
+https://github.com/ammaross/KaceBootstrap
+We are working together to develop this project.  
+
+
+
 Twitter Bootstrap for Kace Service Desk
 
 Challenge: our IT staff wanted more from the service desk ticket view.  We wanted to be able to see multiple queues quickly, have priority take center stage, and eliminate columns not necessary.   The built in layout customizer just was not getting there.  In addition, we also wanted to see dashboard level stats on our service desk; i.e. tickets currently open, open by department, and closed per queue by month.   
