@@ -61,7 +61,7 @@ $(function () {
             title: {
                 text: 'Closed Tickets by Category, last 30 days (<?php echo $mainQueueName ?>)'
         	},    
-			subtitle: {  
+            subtitle: {  
                 text: 'Source: Kace',
                 x: -20
             
@@ -77,9 +77,9 @@ $(function () {
                     cursor: 'pointer',
                     dataLabels: {
                         enabled: true,
-						valueDecimals: 1,
+			valueDecimals: 1,
                         color: '#000000',
-						connectorColor: 'white',
+			connectorColor: 'white',
 
                         formatter: function() {
                             return '<b>'+ this.point.name +'</b>: '+ this.percentage.toFixed(1) +' %';
