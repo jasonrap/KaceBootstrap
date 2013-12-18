@@ -64,11 +64,12 @@ while ( ($row = mysql_fetch_assoc($result1)) != NULL )
 	$error = stripslashes($row['ERROR']);
 	
 	$key = array_search($vendorRating,$ratingOrder);
-	if ( $key !== false && $key !== NULL )
-	{
-		$outputRows[$key] = array( 'VENDOR_RATING'=>$vendorRating, 'COMPLIANCE'=>$compliance,
-			'APPLICABLE'=>$applicable, 'NOTPATCHED'=>$notPatched, 'PATCHED'=>$patched, 'ERROR'=>$error );
-	}
+	if ( $key === false || $key === NULL )
+		$key = $unknownRating++; // post-increment so we get a new "unknown" rating for the next one
+
+	$outputRows[$key] = array( 'VENDOR_RATING'=>$vendorRating, 'COMPLIANCE'=>$compliance,
+		'APPLICABLE'=>$applicable, 'NOTPATCHED'=>$notPatched, 'PATCHED'=>$patched, 'ERROR'=>$error );
+
 	$i++;
 }
 
