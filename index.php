@@ -99,6 +99,10 @@ if ( isset($_GET['r']) )
 			include("dashboards/QCrandom3ClosedTickets.php");
 			break;
 
+		case 'softwareInstalls':
+			include("dashboards/softwareInstalls.php");
+			break;
+
 		default:
 			break;
  	}
