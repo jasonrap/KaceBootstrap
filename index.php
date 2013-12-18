@@ -56,66 +56,87 @@
 <?php
 
 if (isset($_GET['u']))
-{
 	$u = $_GET['u'];
-}
 else
 	$u = NULL;
 
-####################################################
-# This switch statement reads in the URL variables to then include the appropriate files.  
-# You can customize the order in which things are displayed by simply reorganizing the include files.
-# You can also prevent things from being shown by simply commenting them out.                      
-#################################################### 
-switch ($u) {
-//************************
+if ( isset($_GET['r']) )
+{
+	$r = $_GET['r'];
 
-case "r":
-	include_once("reportKaceCurrentOpen.php");
-	echo "<h2>Service Desk Dashboard</h2> <span class='label label-success'>Currently open = $currentlyOpen</span>";
-	#the below file is commented out as you have to do an edit within the file before it will work
-	include_once("reportByQueueClosed.php");
-	include_once("reportByOwner3Month.php");
-	include_once("reportByCategory.php");
-	# we don't use the by-department reporting, so commented out.
-	//include_once("reportByDepartment.php");
-	include_once("reportByClosed.php");
-	break;
-
-case 'cat':
-	include_once("reportGridByCategory.php");
-	break;
-
-case 'recentlyClosed':
-	include_once("dashboards/recentlyClosedTickets.php");
-	break;
-
-default:
-	if ( $u !== NULL )
+	####################################################
+	# This switch statement reads in the URL r (report/dashboard) variable to then include the appropriate files.  
+	# You can customize the order in which things are displayed by simply reorganizing the include files.
+	# You can also prevent things from being shown by simply commenting them out.
+	####################################################
+	switch($r)
 	{
-		$user="DefaultUser";
-		if ( isset($_GET['u']) )
-		{
-			$user = strip_tags($_GET['u']);
-			$user = ucwords($user);
-			$user = mysql_escape_string($user);
-		}
-		include_once("reportForOwner12Months.php");
-		include_once("ownerTemplate.php");
-		include_once("reportGridByCategory.php");
-	}
-	else
+		case 'serviceDesk':
+			include_once("reportKaceCurrentOpen.php");
+			echo "<h2>Service Desk Dashboard</h2> <span class='label label-success'>Currently open = $currentlyOpen</span>";
+			#the below file is commented out as you have to do an edit within the file before it will work
+			include_once("reportByQueueClosed.php");
+			include_once("reportByOwner3Month.php");
+			include_once("reportByCategory.php");
+			# we don't use the by-department reporting, so commented out.
+			//include_once("reportByDepartment.php");
+			include_once("reportByClosed.php");
+			break;
+
+		case 'cat':
+			include_once("reportGridByCategory.php");
+			break;
+
+		case 'recentlyClosed':
+			include_once("dashboards/recentlyClosedTickets.php");
+			break;
+
+		case 'patchCompliance':
+			include_once("dashboards/patchCompliance.php");
+			break;
+
+		default:
+			break;
+ 	}
+}
+else
+{
+	$r = NULL;
+
+	####################################################
+	# This switch statement reads in the URL u (user) variable to then include the appropriate files.  
+	# You can customize the order in which things are displayed by simply reorganizing the include files.
+	# You can also prevent things from being shown by simply commenting them out.
+	####################################################
+	switch ($u)
 	{
-		#if nothing (no user or dashboard) is selected show this:
-		include_once("ownerUnassigned.php");
-		# the below file is commented out as you have to do an edit within the file before it will work
-		# Edit: We don't use a System Builds queue like the original author, and have commented it out.
-		//include_once("buildTickets.php");
-		include_once("openTickets.php");
-		# Edit: We don't use a separate queue for end-user, web-filled tickets (yet) so commented out.
-		//include_once("webTickets.php");
+		default:
+			if ( $u !== NULL )
+			{
+				$user="DefaultUser";
+				if ( isset($_GET['u']) ) // override previous $u
+				{
+					$user = strip_tags($_GET['u']);
+					$user = ucwords($user);
+					$user = mysql_escape_string($user);
+				}
+				include_once("reportForOwner12Months.php");
+				include_once("ownerTemplate.php");
+				include_once("reportGridByCategory.php");
+			}
+			else
+			{
+				#if nothing (no user or dashboard) is selected show this:
+				include_once("ownerUnassigned.php");
+				# the below file is commented out as you have to do an edit within the file before it will work
+				# Edit: We don't use a System Builds queue like the original author, and have commented it out.
+				//include_once("buildTickets.php");
+				include_once("openTickets.php");
+				# Edit: We don't use a separate queue for end-user, web-filled tickets (yet) so commented out.
+				//include_once("webTickets.php");
+			}
+			break;
 	}
-	break;
 }
 ?>
 
