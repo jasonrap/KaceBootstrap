@@ -94,6 +94,10 @@ if ( isset($_GET['r']) )
 		case 'patchCompliance':
 			include_once("dashboards/patchCompliance.php");
 			break;
+			
+		case 'qcClosedTickets':
+			include("dashboards/QCrandom3ClosedTickets.php");
+			break;
 
 		default:
 			break;
