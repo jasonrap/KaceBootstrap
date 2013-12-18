@@ -3,7 +3,7 @@ $user="Unassigned";
 ?>
 
 <h2><?php echo $user ?> Support Tickets</h2>
-<table class="table table-striped table-bordered table-condensed">
+<table class="table table-striped table-bordered table-head-bordered-bottom table-condensed">
   <thead>
     <tr>
       <th class=span2>Ticket ID</th>
