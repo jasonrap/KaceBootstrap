@@ -1,4 +1,11 @@
 <?php
+############################################################
+# Based on jverbosk's idea and query at:
+#  http://www.itninja.com/blog/view/k1000-report-patching-vendor-severity-with-machine-count-and-completion-rates
+# Description:
+#   Displays percentage and count of patch compliance by vendor-supplied severity
+############################################################
+
 	$ratingOrder = array( 0=>
 		'SuperCritical',
 		'Critical',
@@ -8,6 +15,8 @@
 		'None',
 		'Unspecified'
 	);
+	
+	$unknownRating = count($ratingOrder);
 ?>
 <h2>Patch Compliance</h2>
 <table class="table table-striped table-bordered table-head-bordered-bottom table-condensed" style='width:50em'>
@@ -24,8 +33,6 @@
   <tbody>
 
 <?php
-
-// Query courtesy of jverbosk @ http://www.itninja.com/blog/view/k1000-report-patching-vendor-severity-with-machine-count-and-completion-rates
 $query1 = "
 SELECT
 	(IF(V.ATTRVALUE <> '', V.ATTRVALUE, 'Not Available')) AS VENDOR_RATING,
