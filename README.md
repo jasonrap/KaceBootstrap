@@ -5,7 +5,9 @@ Please note this project has been forked and moved to:
 https://github.com/ammaross/KaceBootstrap
 We are working together to develop this project.  
 
+Below is the original description and some links, please visit the URL above for the most up to date information.  
 
+#################################################
 
 Twitter Bootstrap for Kace Service Desk
 
