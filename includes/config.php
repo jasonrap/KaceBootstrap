@@ -7,10 +7,10 @@
 #do not enter in any http:// or https://
 $KaceBoxDNS="kace";
 
-#MYSQL password on dell Kace Box (from Settings -> General Settings)
+#MYSQL password on Dell Kace Box (from Settings -> General Settings)
 $dbpassword="yourpassword";
 
-#number of main queue
+#number of main queue (usually the default queue)
 #used in ownerTemplate.php, ownerUnassigned.php, reportByCategory.php, and reportbyDepartment.php
 $mainQueueID=0; # leave set to 0 if you want your default queue to be your mainQueue.
 $mainQueueName="IT Service Desk";
