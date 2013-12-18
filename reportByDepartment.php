@@ -56,7 +56,7 @@ $(function () {
     $(document).ready(function() {
         chart2 = new Highcharts.Chart({
             chart: {
-                renderTo: 'container2',
+                renderTo: 'conReportByDepartment',
                 plotBackgroundColor: null,
                 plotBorderWidth: null,
                 plotShadow: false
@@ -107,7 +107,7 @@ $(function () {
 <script src="includes/js/highcharts.js"></script>
 <script src="includes/js/modules/exporting.js"></script>
 
-<div id="container2" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+<div id="conReportByDepartment" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
 
 	</body>
 </html>
