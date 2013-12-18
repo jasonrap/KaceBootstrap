@@ -315,7 +315,7 @@ $(function () {
     $(document).ready(function() {
         chart = new Highcharts.Chart({
             chart: {
-                renderTo: 'container',
+                renderTo: 'conReportByQueueClosed',
                 type: 'line',
                 marginRight: 130,
                 marginBottom: 25
@@ -390,7 +390,7 @@ $(function () {
 <script src="includes/js/highcharts.js"></script>
 <script src="includes/js/exporting.js"></script>
 
-<div id="container" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+<div id="conReportByQueueClosed" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
 
 	</body>
 </html>
