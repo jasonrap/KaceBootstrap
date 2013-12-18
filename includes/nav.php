@@ -91,6 +91,7 @@ switch ($r)
 {
 	case "serviceDesk":
 	case "patchCompliance":
+	case "qcClosedTickets":
 		$refreshRate=10000000; // basically, do not refresh
 		break;
 
@@ -136,6 +137,7 @@ echo "
 		</a>
 		<ul class='dropdown-menu'>
 			<li class='nav '><a href='index.php?r=patchCompliance'><i class='icon-picture'></i> Patch Compliance</a></li>
+			<li class='nav '><a href='index.php?r=qcClosedTickets'><i class='icon-picture'></i> Q/C Closed Tickets</a></li>
 		</ul>
 	</li>
 </ul>
