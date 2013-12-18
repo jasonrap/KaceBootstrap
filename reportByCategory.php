@@ -44,7 +44,7 @@ $data=substr($data,0,-2);
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>Closed Tickets by Category (<?php echo $mainQueueName ?>)</title>
+		<title>Closed Tickets by Category (<?php echo $mainQueueName; ?>)</title>
 
 		<script type="text/javascript" src="includes/js/jquery.min.js"></script>
 		<script type="text/javascript">
@@ -53,13 +53,13 @@ $(function () {
     $(document).ready(function() {
         chart2 = new Highcharts.Chart({
             chart: {
-                renderTo: 'container2',
+                renderTo: 'conReportByCategory',
                 plotBackgroundColor: null,
                 plotBorderWidth: null,
                 plotShadow: false
             },
             title: {
-                text: 'Closed Tickets by Category, last 30 days (<?php echo $mainQueueName ?>)'
+                text: 'Closed Tickets by Category, last 30 days (<?php echo $mainQueueName; ?>)'
         	},    
             subtitle: {  
                 text: 'Source: Kace',
@@ -104,7 +104,7 @@ $(function () {
 <script src="includes/js/highcharts.js"></script>
 <script src="includes/js/modules/exporting.js"></script>
 
-<div id="container2" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+<div id="conReportByCategory" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
 
 	</body>
 </html>
