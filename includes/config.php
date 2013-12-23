@@ -14,6 +14,68 @@ $dbpassword="yourpassword";
 #used in ownerTemplate.php, ownerUnassigned.php, reportByCategory.php, and reportbyDepartment.php
 $mainQueueID=0; # leave set to 0 if you want your default queue to be your mainQueue.
 $mainQueueName="IT Service Desk";
+// this is the IDs of the Ticket Owners by Label in the Queue Configuration for the default ticket queue.
+# Add the comma-separated label group numbers if you want to override what is set up in your default ticket queue.
+$mainQueueOwners="34"; // ours would be: "34,88,89";
+
+
+##########################
+## Reports Dropdown Items
+##########################
+$DROPDOWN_DASHBOARDS = 1;
+$DROPDOWN_REPORTS = 2;
+$dropdowns = array(
+	$DROPDOWN_DASHBOARDS => "Dashboards",
+	$DROPDOWN_REPORTS => "Reports"
+);
+
+$dropdownReports = array(
+	'serviceDesk' => array(
+		'menu'=>$DROPDOWN_DASHBOARDS,
+		'displayName'=>"Service Desk",
+		'refreshRate'=>10000000,
+		'files'=>array(
+			'reportKaceCurrentOpen.php',
+			#the below file is commented out as you have to do an edit within the file before it will work
+			'reportByQueueClosed.php',
+			'reportByOwner3Month.php',
+			'reportByCategory.php',
+			# we don't use the by-department reporting, so commented out.
+//			'reportByDepartment.php',
+			'reportByClosed.php'
+		)
+	),
+	'openClosedByCategory' => array(
+		'menu'=>$DROPDOWN_DASHBOARDS,
+		'displayName'=>"Open/Closed by Category",
+		'refreshRate'=>60*60,
+		'files'=>'reportGridByCategory.php'
+	),
+	'recentlyClosed' => array(
+		'menu'=>$DROPDOWN_REPORTS,
+		'displayName'=>"Recently Closed Tickets",
+		'refreshRate'=>60*5,
+		'files'=>'dashboards/recentlyClosedTickets.php'
+	),
+	'patchCompliance' => array(
+		'menu'=>$DROPDOWN_REPORTS,
+		'displayName'=>"Patch Compliance",
+		'refreshRate'=>10000000,
+		'files'=>'dashboards/patchCompliance.php'
+	),
+	'qcClosedTickets' => array(
+		'menu'=>$DROPDOWN_REPORTS,
+		'displayName'=>"Q/C Closed Tickets",
+		'refreshRate'=>10000000,
+		'files'=>'dashboards/QCrandom3ClosedTickets.php'
+	),
+	'softwareInstalls' => array(
+		'menu'=>$DROPDOWN_REPORTS,
+		'displayName'=>"Recent Software Changes",
+		'refreshRate'=>10000000,
+		'files'=>'dashboards/softwareInstalls.php'
+	)
+);
 
 ########END CONFIG#######
 ##########################################
@@ -75,6 +137,34 @@ LIMIT 1
 	{
 		$mainQueueID = $row['ID'];
 		$mainQueueName = $row['NAME'];
+	}
+}
+
+#####################################################
+#### Pull the label groups that are ticket owners of the default ticket queue.
+#####################################################
+if ( $mainQueueOwners == NULL || strlen($mainQueueOwners) < 1 ) // If not configured
+{
+	$query = "
+SELECT
+	QOL.LABEL_ID
+FROM
+	HD_QUEUE Q
+	LEFT JOIN HD_QUEUE_OWNER_LABEL_JT QOL ON QOL.HD_QUEUE_ID=Q.ID
+WHERE Q.ID=$mainQueueID
+";
+
+	$results = mysql_query($query);
+	$num = @mysql_numrows($results);
+	if ( $num > 0 )
+	{
+		$mainQueueOwners = ""; // reset to empty
+
+		while( ($row = mysql_fetch_assoc($results)) != NULL )
+		{
+			$mainQueueOwners .= "$row[LABEL_ID],";
+		}
+		$mainQueueOwners = substr($mainQueueOwners,0,-1); // chop off the trailing comma
 	}
 }
 ?>
