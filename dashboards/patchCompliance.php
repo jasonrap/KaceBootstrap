@@ -15,7 +15,7 @@
 		'None',
 		'Unspecified'
 	);
-	
+
 	$unknownRating = count($ratingOrder);
 ?>
 <h2>Patch Compliance</h2>
