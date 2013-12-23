@@ -1,11 +1,8 @@
 <?php
 include_once("includes/config.php");
 
-######################################
-# Used within the navigation bar. Needs to match exactly the user's Full Name field.
 // TODO: Have the list be user IDs, or at least query for user IDs,
 //   so we can use the IDs in the GET URL, rather than names. It's safer that way.
-// Here's the code to do (most of) it:
 //****************************************
 // Get list of ticket owner users for nav
 //****************************************
@@ -14,8 +11,10 @@ SELECT u.ID,u.FULL_NAME
  FROM `USER` u
   LEFT JOIN USER_LABEL_JT uljt ON (uljt.USER_ID=u.ID)
   LEFT JOIN LABEL l ON (uljt.LABEL_ID=l.ID)
- WHERE l.NAME = 'All Ticket Owners'
+ WHERE -- l.NAME = 'All Ticket Owners'
+	l.ID IN ($mainQueueOwners)
   AND u.HD_DEFAULT_QUEUE_ID >= 0
+  GROUP BY u.ID
  ORDER BY u.FULL_NAME
 ";
 $result1 = mysql_query($query1);
@@ -38,6 +37,9 @@ foreach($userList as $key => $row)
 	$found = 0;
 	foreach($userList as $checkKey => $checkRow)
 	{
+		if ( $key == $checkKey )
+			continue; // don't check against itself
+
 		if ( $row['shortname'] == $checkRow['shortname'] ) // Duplicate first names
 		{
 			if ( ++$found == 1 ) // convert source name on first contact
@@ -65,10 +67,10 @@ foreach($userList as $key => $row)
 ################################################
 // We could pull the userlist dynamically from Kace (see code above),
 //   but this will allow you to include only those you want to see.
-$userList = array(
+/*$userList = array(
 	'Kirk Johnson',
 	'Jason Rappaport'
-);
+);*/
 
 ######################################
 $r="";
@@ -77,15 +79,24 @@ $u="";
 $p="";
 
 if (isset($_GET['u']))
-{
 	$u = $_GET['u'];
-}
-
 if ( isset($_GET['r']) )
 	$r = $_GET['r'];
 
 $refreshRate=60;
 
+// Lots of validation checking
+if ( array_key_exists($r,$dropdownReports) )
+{
+	if ( isset($dropdownReports["$r"]) && is_array($dropdownReports["$r"])
+	&& isset($dropdownReports["$r"]['refreshRate']) )
+	{
+		$refreshRate = $dropdownReports["$r"]['refreshRate'];
+		if ( !is_numeric($refreshRate) )
+			$refreshRate = 60; // jic
+	}
+}
+/*
 // Modify the refresh rate for report/dashboard pages
 switch ($r)
 {
@@ -107,18 +118,54 @@ switch ($r)
 	default:
 		break;
 }
-
+*/
 
 echo "<ul class='nav'>\n";
 
+// Display Ticket Owners across the nav bar.
 foreach( $userList as $username )
 {
-	$parts = explode(' ',$username);
-	$shortName = (is_array($parts)?$parts[0]:$parts);
+	if ( is_array($username) )
+	{
+		$shortName = $username['shortname'];
+		$username = $username['user'];
+	}
+	else
+	{
+		$parts = explode(' ',$username);
+		$shortName = (is_array($parts)?$parts[0]:$parts);
+	}
 	$active = (($username == $u)?"active":"");
 	print( "	<li class='nav $active'><a href='index.php?u=$username'>$shortName</a></li>\n" );
 }
 
+// Generate the dropdown menus after the Ticket Owners list.
+foreach( $dropdowns as $dropdownID => $dropdownName )
+{
+	echo "
+	<li class='dropdown'>
+		<a class='dropdown-toggle' data-toggle='dropdown' href='#'>
+			$dropdownName
+			<b class='caret'></b>
+		</a>
+		<ul class='dropdown-menu'>
+";
+	// Populate the dropdown menu.
+	foreach( $dropdownReports as $paramID => $item )
+	{
+		if ( !is_array($item) || !isset($item['menu'])
+		|| $item['menu'] != $dropdownID )
+			continue;
+
+		echo "<li class='nav '><a href='index.php?r=$paramID'><i class='icon-picture'></i> $item[displayName]</a></li>";
+	}
+
+	echo "
+		</ul>
+	</li>
+";
+}
+/* // The old way of doing it.
 echo "
 	<li class='dropdown'>
 		<a class='dropdown-toggle' data-toggle='dropdown' href='#'>
@@ -127,7 +174,7 @@ echo "
 		</a>
 		<ul class='dropdown-menu'>
 			<li class='nav '><a href='index.php?r=serviceDesk'><i class='icon-picture'></i> Service Desk</a></li>
-			<li class='nav '><a href='index.php?r=cat'><i class='icon-picture'></i> Open/Closed by Category</a></li>
+			<li class='nav '><a href='index.php?r=openClosedByCategory'><i class='icon-picture'></i> Open/Closed by Category</a></li>
 			<li class='nav '><a href='index.php?r=recentlyClosed'><i class='icon-picture'></i> Recently Closed Tickets</a></li>
 		</ul>
 	</li>
@@ -143,5 +190,5 @@ echo "
 		</ul>
 	</li>
 </ul>
-";
+";*/
 ?>
