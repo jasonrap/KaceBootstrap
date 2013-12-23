@@ -2,7 +2,7 @@
 #start RT queries
 #for coming up with the total for today, average, and max
 $currentlyOpen="";
-include ('includes/config.php');
+include_once('includes/config.php');
 
 $theDate = date("Y-m-d");
 $theYear = date("Y");
@@ -25,4 +25,6 @@ while ($i < $num)
 	$i++;
 }
 
+// So far, only called from the Service Desk
+echo "<h2>Service Desk Dashboard</h2><span class='label label-success'>Currently open = $currentlyOpen</span>";
 ?>
