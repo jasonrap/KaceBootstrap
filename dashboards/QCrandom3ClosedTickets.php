@@ -4,7 +4,7 @@
 #  http://www.itninja.com/blog/view/simple-quality-analysis-report
 # Description:
 #   Pulls a random 3 tickets that were closed in the last calendar week
-#   for each member of the 'All Ticket Owners' group
+#   for each member of the $mainQueueOwners group(s).
 ############################################################
 
 	$numOfTickets = 3; // how many tickets for each user you want to Q/C
@@ -28,8 +28,10 @@ SELECT u.ID,u.FULL_NAME
  FROM `USER` u
   LEFT JOIN USER_LABEL_JT uljt ON (uljt.USER_ID=u.ID)
   LEFT JOIN LABEL l ON (uljt.LABEL_ID=l.ID)
- WHERE l.NAME = 'All Ticket Owners'
+ WHERE -- l.NAME = 'All Ticket Owners'
+	l.ID IN ($mainQueueOwners)
   AND u.HD_DEFAULT_QUEUE_ID >= 0
+  GROUP BY u.ID
  ORDER BY u.FULL_NAME
 ";
 $result1 = mysql_query($query1);
