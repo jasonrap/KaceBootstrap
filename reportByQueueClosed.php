@@ -39,7 +39,7 @@ $deleteQueue2 = false;
 $yAxis = array( 0=>array(), 1=>array(), 2=>array(), 3=>array(), 4=>array() );
 $dataString="";
 
-include ('includes/config.php');
+include_once('includes/config.php');
 
 //***************************************
 // Total Open Tickets
