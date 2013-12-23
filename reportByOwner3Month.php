@@ -19,8 +19,10 @@ SELECT u.ID,u.USER_NAME
  FROM `USER` u
   LEFT JOIN USER_LABEL_JT uljt ON (uljt.USER_ID=u.ID)
   LEFT JOIN LABEL l ON (uljt.LABEL_ID=l.ID)
- WHERE l.NAME = 'All Ticket Owners'
+ WHERE -- l.NAME = 'All Ticket Owners'
+	l.ID IN ($mainQueueOwners)
   AND u.HD_DEFAULT_QUEUE_ID >= 0
+  GROUP BY u.ID
  ORDER BY u.USER_NAME
 ";
 
