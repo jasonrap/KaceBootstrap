@@ -65,36 +65,51 @@ if ( isset($_GET['r']) )
 	$r = $_GET['r'];
 
 	####################################################
-	# This switch statement reads in the URL r (report/dashboard) variable to then include the appropriate files.  
-	# You can customize the order in which things are displayed by simply reorganizing the include files.
-	# You can also prevent things from being shown by simply commenting them out.
+	# This section reads the URL r (report/dashboard) variable and finds the files from the reports table.
+	# You can customize the order in which things are displayed by simply reorganizing the files in the table.
+	# You can also prevent things from being shown by simply commenting them out from the table files list.
 	####################################################
+	if ( isset($dropdownReports[$r]) )
+	{
+		$report = $dropdownReports[$r];
+		if ( is_array($report) && isset($report['files']) )
+		{
+			$files = $report['files'];
+			if ( is_array($files) )
+			{
+				foreach($files as $file)
+					include($file);
+			}
+			else
+				include($files);
+		}
+	}
+/*	// Modify in includes/config.php now
 	switch($r)
 	{
 		case 'serviceDesk':
-			include_once("reportKaceCurrentOpen.php");
-			echo "<h2>Service Desk Dashboard</h2> <span class='label label-success'>Currently open = $currentlyOpen</span>";
+			include("reportKaceCurrentOpen.php");
 			#the below file is commented out as you have to do an edit within the file before it will work
-			include_once("reportByQueueClosed.php");
-			include_once("reportByOwner3Month.php");
-			include_once("reportByCategory.php");
+			include("reportByQueueClosed.php");
+			include("reportByOwner3Month.php");
+			include("reportByCategory.php");
 			# we don't use the by-department reporting, so commented out.
-			//include_once("reportByDepartment.php");
-			include_once("reportByClosed.php");
+			//include("reportByDepartment.php");
+			include("reportByClosed.php");
 			break;
 
-		case 'cat':
-			include_once("reportGridByCategory.php");
+		case 'openClosedByCategory':
+			include("reportGridByCategory.php");
 			break;
 
 		case 'recentlyClosed':
-			include_once("dashboards/recentlyClosedTickets.php");
+			include("dashboards/recentlyClosedTickets.php");
 			break;
 
 		case 'patchCompliance':
-			include_once("dashboards/patchCompliance.php");
+			include("dashboards/patchCompliance.php");
 			break;
-			
+
 		case 'qcClosedTickets':
 			include("dashboards/QCrandom3ClosedTickets.php");
 			break;
@@ -105,7 +120,7 @@ if ( isset($_GET['r']) )
 
 		default:
 			break;
- 	}
+ 	}*/
 }
 else
 {
