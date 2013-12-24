@@ -1,10 +1,13 @@
 KaceBootstrap
 =============
+https://github.com/ammaross/KaceBootstrap
 
 -------------------------------------------------------------------------
 The original project at GitHub: https://github.com/jasonrap/KaceBootstrap
 
 This was only forked due to having no ability to directly communicate with the original author to collaborate on the original project, and I wanted to contribute my changes back to the community.
+
+I have since been in contact with jasonrap and we will be collaborating on this fork of his oringal project.
 
 -------------------------------------------------------------------------
 
@@ -29,9 +32,9 @@ Posted on ITNinja here http://www.itninja.com/blog/view/twitter-bootstrap-for-ka
 
 Files that will need to be edited to fit your organization:
 
-* includes/config.php - REQUIRED. Your KBox's DNS name and your report user's password (from Settings -> General Settings). Also, recommended but not necessary, your main (default) ticket queue ID and name.
-* includes/nav.php - REQUIRED. Update the userList array with your users.
-* index.php - Pick the reports in the switch()s at lines 73 and 164 that you want to uncomment if you have the need.
+* includes/config.php - REQUIRED. Your KBox's DNS name and your report user's (R1) password (from Settings -> General Settings). Also, recommended but not necessary, your main (default) ticket queue ID and name.
+* includes/nav.php - Optional: Update the userList array with your users (otherwise, will be automatically collected).
+* index.php - Pick the reports in the switch at line 188 that you want to uncomment if you have the need.
 * buildTickets.php - if you have a queue for computer builds, otherwise, don't worry.
 * ownerUnassigned.php - You may want to rename the Custom Field 0 column (or remove it altogether if you don't use it).
 * reportByQueueClosed.php - REQUIRED. Queue IDs and plot titles. You can disable a couple plots too.
