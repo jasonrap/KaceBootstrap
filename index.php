@@ -182,6 +182,8 @@ else
     <script src="includes/js/bootstrap-carousel.js"></script>
     <script src="includes/js/bootstrap-typeahead.js"></script>
     <script src="includes/js/numpad.js" type="text/javascript"></script>
+	<!-- our custom js functions -->
+	<script src="includes/js/kacebootstrap.js" type="text/javascript"></script>
 
   </body>
 </html>
