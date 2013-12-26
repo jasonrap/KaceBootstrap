@@ -94,7 +94,7 @@ while ($i < $num)
 	echo "<td>$Owner</td> \n";
 	echo "<td>$Created</td> \n";
 	echo "<td>$Modified</td> \n";
-	if ( $Resolution != NULL AND strlen($Resolution > 0) )
+	if ( $Resolution != NULL AND strlen($Resolution) > 0 )
 		echo "<td>$Resolution</td>\n";
 	else
 		echo "<td>$Comment</td>\n";
