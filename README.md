@@ -7,7 +7,7 @@ The original project at GitHub: https://github.com/jasonrap/KaceBootstrap
 
 This was only forked due to having no ability to directly communicate with the original author to collaborate on the original project, and I wanted to contribute my changes back to the community.
 
-I have since been in contact with jasonrap and we will be collaborating on this fork of his oringal project.
+I have since been in contact with jasonrap and we will be collaborating on this fork of his original project.
 
 -------------------------------------------------------------------------
 
