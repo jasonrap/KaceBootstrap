@@ -4,8 +4,8 @@
 ## This reports on mainQueueID, which is configured in includes/config.php
 ########
 
-$gridTitle = "$mainQueueName - Open/Closed Tickets by Category";
 require_once('includes/config.php');
+$gridTitle = "$mainQueueName - Open/Closed Tickets by Category";
 
 $category = 0;
 $sub = 0;
@@ -25,6 +25,7 @@ else
 
 if ( isset($_GET['cat']) && is_numeric($_GET['cat']) )
 {
+	$user = false;
 	$category = intval($_GET['cat']);
 	$catName = "";
 	$query = "SELECT NAME FROM HD_CATEGORY WHERE HD_CATEGORY.ID = '$category' LIMIT 1";
@@ -193,12 +194,12 @@ while( ($row = mysql_fetch_assoc($result)) )
 	{ //".$_SERVER['PHP_SELF']."
 		print( "		<tr>
 		<td>".strip_tags($row['CatName'])."</td>
-		<td style=\"cursor:pointer; cursor:hand;\" onclick=\"window.location.href='?u=cat&cat=$row[CatID]&sub=1".($user!==false?"&user=".urlencode($user):"")."'\">$row[currently_open]</td>
-		<td style=\"cursor:pointer; cursor:hand;\" onclick=\"window.location.href='?u=cat&cat=$row[CatID]&sub=2".($user!==false?"&user=".urlencode($user):"")."'\">$row[openedLast30]</td>
-		<td style=\"cursor:pointer; cursor:hand;\" onclick=\"window.location.href='?u=cat&cat=$row[CatID]&sub=3".($user!==false?"&user=".urlencode($user):"")."'\">$row[closedLast30]</td>
+		<td style=\"cursor:pointer; cursor:hand;\" onclick=\"window.location.href='?r=cat&cat=$row[CatID]&sub=1".($user!==false?"&user=".urlencode($user):"")."'\">$row[currently_open]</td>
+		<td style=\"cursor:pointer; cursor:hand;\" onclick=\"window.location.href='?r=cat&cat=$row[CatID]&sub=2".($user!==false?"&user=".urlencode($user):"")."'\">$row[openedLast30]</td>
+		<td style=\"cursor:pointer; cursor:hand;\" onclick=\"window.location.href='?r=cat&cat=$row[CatID]&sub=3".($user!==false?"&user=".urlencode($user):"")."'\">$row[closedLast30]</td>
 		<td>".($row['closedLast30']>0?runtime(0,$row['avg30_s'],true):"")."</td>
-		<td style=\"cursor:pointer; cursor:hand;\" onclick=\"window.location.href='?u=cat&cat=$row[CatID]&sub=4".($user!==false?"&user=".urlencode($user):"")."'\">$row[openedLast12]</td>
-		<td style=\"cursor:pointer; cursor:hand;\" onclick=\"window.location.href='?u=cat&cat=$row[CatID]&sub=5".($user!==false?"&user=".urlencode($user):"")."'\">$row[closedLast12]</td>
+		<td style=\"cursor:pointer; cursor:hand;\" onclick=\"window.location.href='?r=cat&cat=$row[CatID]&sub=4".($user!==false?"&user=".urlencode($user):"")."'\">$row[openedLast12]</td>
+		<td style=\"cursor:pointer; cursor:hand;\" onclick=\"window.location.href='?r=cat&cat=$row[CatID]&sub=5".($user!==false?"&user=".urlencode($user):"")."'\">$row[closedLast12]</td>
 		<td>".($row['closedLast12']>0?runtime(0,$row['avg12m_s'],true):"")."</td>
 		</tr>\n" );
 	}
