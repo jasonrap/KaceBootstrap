@@ -134,7 +134,7 @@ $query = "
 SELECT count(HD_TICKET.ID) as total,
 	HD_TICKET.HD_CATEGORY_ID as CatID,
 	HD_CATEGORY.NAME as CatName,
-	SUM(IF(HD_STATUS.NAME not like '%closed%',1,0)) as currently_open,
+	SUM(IF(HD_STATUS.STATE not like '%closed%',1,0)) as currently_open,
 	SUM(IF(HD_TICKET.CREATED >= DATE_SUB(NOW(), INTERVAL 30 DAY),1,0)) as openedLast30,
 	SUM(IF(HD_TICKET.TIME_CLOSED >= DATE_SUB(NOW(), INTERVAL 30 DAY),1,0)) as closedLast30,
 	SUM(IF(HD_TICKET.TIME_CLOSED >= DATE_SUB(NOW(), INTERVAL 30 DAY),
@@ -159,7 +159,7 @@ WHERE (HD_STATUS.NAME not like '%Server Status Report%')
 	)
 	".($user!==false?" AND (O.FULL_NAME like '%$user%')":"")."
 GROUP BY HD_TICKET.HD_CATEGORY_ID
-ORDER BY SUM(IF(HD_STATUS.NAME not like '%closed%',1,0)) DESC;
+ORDER BY SUM(IF(HD_STATUS.STATE not like '%closed%',1,0)) DESC;
 ";
 
 $result = mysql_query($query);
