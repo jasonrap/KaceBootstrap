@@ -1583,6 +1583,11 @@ table {
 	border-bottom: 1px solid #888888;
 }
 
+.table-bordered tr.totalsrow th {
+	background: #F8F8F8;
+	border-top: 1px solid #888888;
+}
+
 .table-bordered caption + thead tr:first-child th,
 .table-bordered caption + tbody tr:first-child th,
 .table-bordered caption + tbody tr:first-child td,
