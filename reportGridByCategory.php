@@ -190,6 +190,8 @@ while( ($row = mysql_fetch_assoc($result)) )
   </thead>
   <tbody>
   <?php
+	$count = array();
+	$count['currently_open'] = $count['openedLast30'] = $count['closedLast30'] = $count['openedLast12'] = $count['closedLast12'] = 0;
 	foreach($rows as $row)
 	{ //".$_SERVER['PHP_SELF']."
 		print( "		<tr>
@@ -202,7 +204,17 @@ while( ($row = mysql_fetch_assoc($result)) )
 		<td style=\"cursor:pointer; cursor:hand;\" onclick=\"window.location.href='?r=cat&cat=$row[CatID]&sub=5".($user!==false?"&user=".urlencode($user):"")."'\">$row[closedLast12]</td>
 		<td>".($row['closedLast12']>0?runtime(0,$row['avg12m_s'],true):"")."</td>
 		</tr>\n" );
+
+		$count['currently_open'] += $row['currently_open'];
+		$count['openedLast30'] += $row['openedLast30'];
+		$count['closedLast30'] += $row['closedLast30'];
+		$count['openedLast12'] += $row['openedLast12'];
+		$count['closedLast12'] += $row['closedLast12'];
 	}
+
+	print( "<tr class='totalsrow'><th style='text-align:right'>Totals:</th><th>$count[currently_open]</th>
+		<th>$count[openedLast30]</th><th>$count[closedLast30]</th><th></th>
+		<th>$count[openedLast12]</th><th>$count[closedLast12]</th><th></th></tr>\n" );
   ?>
   </tbody>
   </table>
