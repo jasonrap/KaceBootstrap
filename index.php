@@ -84,6 +84,16 @@ if ( isset($_GET['r']) )
 				include($files);
 		}
 	}
+	else
+	{
+		// custom hidden reports. Use this until enough to justify adding a 'hidden' value to the dropdown table.
+		switch($r)
+		{
+			case 'cat':
+				include_once("reportGridByCategory.php");
+				break;
+		}
+	}
 /*	// Modify in includes/config.php now
 	switch($r)
 	{
