@@ -118,6 +118,13 @@ ORDER BY Created DESC
 			break;
 	}
 	}
+
+	print12MonthChart($category);
+}
+else
+{
+	if ( isset($_GET['r']) )
+		print12MonthChart(0);
 }
 
 if ( $category > 0 && $sub > 0 )
@@ -135,16 +142,16 @@ SELECT count(HD_TICKET.ID) as total,
 	HD_TICKET.HD_CATEGORY_ID as CatID,
 	HD_CATEGORY.NAME as CatName,
 	SUM(IF(HD_STATUS.STATE not like '%closed%',1,0)) as currently_open,
-	SUM(IF(HD_TICKET.CREATED >= DATE_SUB(NOW(), INTERVAL 30 DAY),1,0)) as openedLast30,
-	SUM(IF(HD_TICKET.TIME_CLOSED >= DATE_SUB(NOW(), INTERVAL 30 DAY),1,0)) as closedLast30,
-	SUM(IF(HD_TICKET.TIME_CLOSED >= DATE_SUB(NOW(), INTERVAL 30 DAY),
+	SUM(IF(HD_TICKET.CREATED >= DATE_SUB(CURDATE(), INTERVAL 30 DAY),1,0)) as openedLast30,
+	SUM(IF(HD_TICKET.TIME_CLOSED >= DATE_SUB(CURDATE(), INTERVAL 30 DAY),1,0)) as closedLast30,
+	SUM(IF(HD_TICKET.TIME_CLOSED >= DATE_SUB(CURDATE(), INTERVAL 30 DAY),
 		TIMESTAMPDIFF(SECOND,HD_TICKET.CREATED,HD_TICKET.TIME_CLOSED),0))
-		/ SUM(IF(HD_TICKET.TIME_CLOSED >= DATE_SUB(NOW(), INTERVAL 30 DAY),1,0)) as avg30_s,
-	SUM(IF(HD_TICKET.CREATED >= DATE_SUB(NOW(), INTERVAL 12 MONTH),1,0)) as openedLast12,
-	SUM(IF(HD_TICKET.TIME_CLOSED >= DATE_SUB(NOW(), INTERVAL 12 MONTH),1,0)) as closedLast12,
-	SUM(IF(HD_TICKET.TIME_CLOSED >= DATE_SUB(NOW(), INTERVAL 12 MONTH),
+		/ SUM(IF(HD_TICKET.TIME_CLOSED >= DATE_SUB(CURDATE(), INTERVAL 30 DAY),1,0)) as avg30_s,
+	SUM(IF(HD_TICKET.CREATED >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH),1,0)) as openedLast12,
+	SUM(IF(HD_TICKET.TIME_CLOSED >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH),1,0)) as closedLast12,
+	SUM(IF(HD_TICKET.TIME_CLOSED >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH),
 		TIMESTAMPDIFF(SECOND,HD_TICKET.CREATED,HD_TICKET.TIME_CLOSED),0))
-		/ SUM(IF(HD_TICKET.TIME_CLOSED >= DATE_SUB(NOW(), INTERVAL 12 MONTH),1,0)) as avg12m_s
+		/ SUM(IF(HD_TICKET.TIME_CLOSED >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH),1,0)) as avg12m_s
 FROM HD_TICKET
 	JOIN HD_STATUS ON (HD_STATUS.ID = HD_TICKET.HD_STATUS_ID) 
 	LEFT JOIN HD_CATEGORY ON (HD_TICKET.HD_CATEGORY_ID=HD_CATEGORY.ID)
@@ -154,8 +161,8 @@ WHERE (HD_STATUS.NAME not like '%Server Status Report%')
 	AND (HD_TICKET.HD_QUEUE_ID = $mainQueueID)
 	AND (
 		((HD_STATUS.STATE not like '%closed%')
-			AND HD_TICKET.CREATED >= DATE_SUB(DATE_ADD(last_day(NOW()), INTERVAL 1 DAY), INTERVAL 12 MONTH))
-		OR (HD_TICKET.TIME_CLOSED >= DATE_SUB(DATE_ADD(last_day(NOW()), INTERVAL 1 DAY), INTERVAL 12 MONTH))
+			AND HD_TICKET.CREATED >= DATE_SUB(DATE_ADD(last_day(CURDATE()), INTERVAL 1 DAY), INTERVAL 12 MONTH))
+		OR (HD_TICKET.TIME_CLOSED >= DATE_SUB(DATE_ADD(last_day(CURDATE()), INTERVAL 1 DAY), INTERVAL 12 MONTH))
 	)
 	".($user!==false?" AND (O.FULL_NAME like '%$user%')":"")."
 GROUP BY HD_TICKET.HD_CATEGORY_ID
@@ -343,5 +350,190 @@ function runtime($startstamp, $endstamp, $shortformat = TRUE, $num_times = 2)
 	}
 
 	return $time;
+}
+
+
+function print12MonthChart($category)
+{
+global $mainQueueOwners;
+global $mainQueueID;
+//return;
+
+## Can modify if you want different than 12 months.
+$maxMonths = 12;
+
+$seriesOpened = array();
+$seriesClosed = array();
+/* Prep open/closed */
+$m = strftime('%m');
+$y = strftime('%Y');
+for ($i = 0; $i < $maxMonths; $i++)
+{
+	$key = date("Y-m", mktime(0, 0, 0, $m-$i, 1, $y));
+    $seriesOpened[$key] = 0;
+	$seriesClosed[$key] = 0;
+}
+
+//***************************************
+// Opened Tickets (were created during time period)
+//***************************************
+$query1 = "
+SELECT count(hdt.ID) as total,
+	MONTH(hdt.CREATED) as month,
+	YEAR(hdt.CREATED) as year
+FROM HD_TICKET hdt
+	JOIN HD_STATUS ON (HD_STATUS.ID = hdt.HD_STATUS_ID)
+WHERE (hdt.HD_QUEUE_ID = $mainQueueID)
+".($category>0?" AND (hdt.HD_CATEGORY_ID = '$category')":"")."
+AND (
+	(HD_STATUS.NAME not like '%Spam%')
+	AND (HD_STATUS.NAME not like '%Server Status Report%')
+)
+AND (hdt.CREATED >= DATE_SUB(DATE_ADD(last_day(CURDATE()), INTERVAL 1 DAY), INTERVAL $maxMonths MONTH))
+GROUP BY YEAR(hdt.CREATED), MONTH(hdt.CREATED)
+ORDER BY YEAR(hdt.CREATED), MONTH(hdt.CREATED)
+";
+
+$result1 = mysql_query($query1);
+while( ($row = mysql_fetch_assoc($result1)) )
+{
+	$total = $row["total"];
+	$month = $row["month"];
+	$year = $row["year"];
+
+	$seriesOpened[sprintf("%d-%02d",$year,$month)] = $total;
+}
+
+
+//***************************************
+// Closed Tickets
+//***************************************
+$query1 = "
+SELECT count(hdt.ID) as total,
+	MONTH(hdt.TIME_CLOSED) as month,
+	YEAR(hdt.TIME_CLOSED) as year
+FROM HD_TICKET hdt
+	JOIN HD_STATUS ON (HD_STATUS.ID = hdt.HD_STATUS_ID)
+WHERE (hdt.HD_QUEUE_ID = $mainQueueID)
+".($category>0?" AND (hdt.HD_CATEGORY_ID = '$category')":"")."
+	AND (
+		(HD_STATUS.STATE like '%closed%')
+		AND (
+			(HD_STATUS.NAME not like '%Spam%')
+			AND (HD_STATUS.NAME not like '%Server Status Report%')
+		)
+	)
+AND hdt.TIME_CLOSED >= DATE_SUB(DATE_ADD(last_day(CURDATE()), INTERVAL 1 DAY), INTERVAL $maxMonths MONTH)
+GROUP BY YEAR(hdt.TIME_CLOSED), MONTH(hdt.TIME_CLOSED)
+ORDER BY hdt.TIME_CLOSED
+";
+
+$result1 = mysql_query($query1);
+while( ($row = mysql_fetch_assoc($result1)) )
+{
+	$total = $row["total"];
+	$month = $row["month"];
+	$year = $row["year"];
+
+	$seriesClosed[sprintf("%d-%02d",$year,$month)] = $total;
+}
+
+/* Order the dates */
+ksort($seriesOpened);
+ksort($seriesClosed);
+
+/* Set up xAxis of dates */
+$xAxis="";
+foreach($seriesOpened as $key=>$value)
+	$xAxis .= "'$key', ";
+$xAxis = substr($xAxis,0,-2);
+
+?>
+		<title>Tickets Opened/Closed by Month (Last <?php echo $maxMonths ?> Months)</title>
+
+		<script type="text/javascript" src="includes/js/jquery.min.js"></script>
+		<script type="text/javascript">
+$(function () {
+    var chart;
+    $(document).ready(function() {
+        chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'ticketsopenclosedgrid12months',
+                type: 'column',
+                marginRight: 130,
+                marginBottom: 25
+		
+            },
+            title: {
+                text: 'Tickets Opened/Closed by Month (Last <?php echo $maxMonths ?> Months)',
+                x: -20 //center
+            },
+            subtitle: {
+                text: 'Source: Kace',
+                x: -20
+            },
+            xAxis: {
+                categories: [<?php echo $xAxis ?>]
+            },
+            yAxis: {
+                title: {
+                    text: 'Tickets'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                formatter: function() {
+                        return '<b>'+ this.series.name +'</b><br/>'+
+                        this.x +': '+ this.y;
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: -10,
+                y: 100,
+                borderWidth: 0
+            },
+            series: [<?php
+	/* Opened Tickets */
+	print( "{
+			name: 'Opened',
+			data: [" );
+	$yAxis = "";
+	foreach($seriesOpened as $value)
+		$yAxis .= "$value, ";
+	$yAxis = substr($yAxis,0,-2);
+	print( $yAxis );
+	print( "]
+		}," );
+
+	/* Closed Tickets */
+	print( "{
+			name: 'Closed',
+			data: [" );
+	$yAxis = "";
+	foreach($seriesClosed as $value)
+		$yAxis .= "$value, ";
+	$yAxis = substr($yAxis,0,-2);
+	print( $yAxis );
+	print( "]
+			}" );?>]
+        });
+    });
+    
+});
+		</script>
+	</head>
+	<body>
+<script src="includes/js/highcharts.js"></script>
+<script src="includes/js/exporting.js"></script>
+
+<div id="ticketsopenclosedgrid12months" style="min-width: 500px; height: 300px; margin: 0 auto"></div>
+<?php
 }
 ?>
