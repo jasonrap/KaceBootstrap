@@ -189,6 +189,6 @@ echo "
 			<li class='nav '><a href='index.php?r=softwareInstalls'><i class='icon-picture'></i> Recent Software Changes</a></li>
 		</ul>
 	</li>
-</ul>
 ";*/
 ?>
+</ul>
