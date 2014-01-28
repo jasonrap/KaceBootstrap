@@ -155,6 +155,7 @@ else
 				}
 				include_once("reportForOwner12Months.php");
 				include_once("ownerTemplate.php");
+				include_once("ownerInTicketCCList.php");
 				include_once("reportGridByCategory.php");
 			}
 			else
