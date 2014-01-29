@@ -25,7 +25,7 @@ else
 
 if ( isset($_GET['cat']) && is_numeric($_GET['cat']) )
 {
-	$user = false;
+//	$user = false;
 	$category = intval($_GET['cat']);
 	$catName = "";
 	$query = "SELECT NAME FROM HD_CATEGORY WHERE HD_CATEGORY.ID = '$category' LIMIT 1";
@@ -357,6 +357,7 @@ function print12MonthChart($category)
 {
 global $mainQueueOwners;
 global $mainQueueID;
+global $user;
 //return;
 
 ## Can modify if you want different than 12 months.
@@ -383,6 +384,7 @@ SELECT count(hdt.ID) as total,
 	YEAR(hdt.CREATED) as year
 FROM HD_TICKET hdt
 	JOIN HD_STATUS ON (HD_STATUS.ID = hdt.HD_STATUS_ID)
+".($user!==false?"LEFT JOIN USER O ON (O.ID = hdt.OWNER_ID)":"")."
 WHERE (hdt.HD_QUEUE_ID = $mainQueueID)
 ".($category>0?" AND (hdt.HD_CATEGORY_ID = '$category')":"")."
 AND (
@@ -390,6 +392,7 @@ AND (
 	AND (HD_STATUS.NAME not like '%Server Status Report%')
 )
 AND (hdt.CREATED >= DATE_SUB(DATE_ADD(last_day(CURDATE()), INTERVAL 1 DAY), INTERVAL $maxMonths MONTH))
+".($user!==false?" AND (O.FULL_NAME like '%$user%')":"")."
 GROUP BY YEAR(hdt.CREATED), MONTH(hdt.CREATED)
 ORDER BY YEAR(hdt.CREATED), MONTH(hdt.CREATED)
 ";
@@ -414,6 +417,7 @@ SELECT count(hdt.ID) as total,
 	YEAR(hdt.TIME_CLOSED) as year
 FROM HD_TICKET hdt
 	JOIN HD_STATUS ON (HD_STATUS.ID = hdt.HD_STATUS_ID)
+".($user!==false?"LEFT JOIN USER O ON (O.ID = hdt.OWNER_ID)":"")."
 WHERE (hdt.HD_QUEUE_ID = $mainQueueID)
 ".($category>0?" AND (hdt.HD_CATEGORY_ID = '$category')":"")."
 	AND (
@@ -423,7 +427,8 @@ WHERE (hdt.HD_QUEUE_ID = $mainQueueID)
 			AND (HD_STATUS.NAME not like '%Server Status Report%')
 		)
 	)
-AND hdt.TIME_CLOSED >= DATE_SUB(DATE_ADD(last_day(CURDATE()), INTERVAL 1 DAY), INTERVAL $maxMonths MONTH)
+AND (hdt.TIME_CLOSED >= DATE_SUB(DATE_ADD(last_day(CURDATE()), INTERVAL 1 DAY), INTERVAL $maxMonths MONTH))
+".($user!==false?" AND (O.FULL_NAME like '%$user%')":"")."
 GROUP BY YEAR(hdt.TIME_CLOSED), MONTH(hdt.TIME_CLOSED)
 ORDER BY hdt.TIME_CLOSED
 ";
