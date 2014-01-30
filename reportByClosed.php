@@ -1,27 +1,53 @@
 <?php
 
 $xAxis="";
-$yAxis="";
+$closedAxis="";
+$openedAxis="";
 $i = 0;
-$ii = 0;
 
 include_once ('includes/config.php');
 include_once("reportByClosedAverage.php");
 
+## Can modify if you want different than 30 days.
+$maxDays = 30;
+
+$seriesOpened = array();
+$seriesClosed = array();
+/* Prep open/closed */
+$m = strftime('%m');
+$y = strftime('%Y');
+$d = strftime('%d');
+for ($i = 0; $i < $maxDays; $i++)
+{
+	$key = date("n/d", mktime(0, 0, 0, $m, $d-$i, $y));
+    $seriesOpened[$key] = 0;
+	$seriesClosed[$key] = 0;
+	$xAxis.="'$key',";
+}
+$xAxis=substr($xAxis,0,-1);
+
+//***************************************
+// Closed Tickets (were closed during time period)
+//***************************************
 $query="
-SELECT count(HD_TICKET.ID) as counted,
-MONTH(TIME_CLOSED) as month,
-DAY(TIME_CLOSED) as day,
-YEAR(TIME_CLOSED) as year
-from
-  HD_STATUS Inner Join
-  HD_TICKET On HD_TICKET.HD_STATUS_ID = HD_STATUS.ID
-  where (HD_STATUS.STATE LIKE '%Closed%')
-  and (
-       	(HD_STATUS.NAME not like '%spam%')
-		AND (TIME_CLOSED >= ( CURDATE() - INTERVAL 30 DAY ))
+SELECT
+	COUNT(HD_TICKET.ID) as total,
+	MONTH(TIME_CLOSED) as month,
+	DAY(TIME_CLOSED) as day,
+	YEAR(TIME_CLOSED) as year
+FROM
+	HD_TICKET INNER JOIN
+	HD_STATUS ON HD_TICKET.HD_STATUS_ID = HD_STATUS.ID
+WHERE
+	(HD_TICKET.HD_QUEUE_ID = $mainQueueID)
+	AND (HD_STATUS.STATE LIKE '%Closed%')
+	AND (
+		(HD_STATUS.NAME NOT LIKE '%spam%')
+		AND (HD_STATUS.NAME NOT LIKE '%Server Status Report%')
 	)
-group by DATE(TIME_CLOSED)
+	AND (TIME_CLOSED >= ( CURDATE() - INTERVAL $maxDays DAY ))
+GROUP BY
+	DATE(TIME_CLOSED)
 ";
 
 
@@ -30,40 +56,77 @@ if (!$result) {
     echo 'Could not run query: ' . mysql_error();
     exit;
 }
-$result = mysql_query($query);
-$num = mysql_num_rows($result);
 
-
-while ($i < $num)
+while( ($row = mysql_fetch_assoc($result)) )
 {
-	$counted = mysql_result($result,$i,"counted");
-	$month = mysql_result($result,$i,"month");
-	$day = mysql_result($result,$i,"day");
-	$year = mysql_result($result,$i,"year");
-	#echo "$counted on $month/$day/$year<br>";
-
-	$i++;
-
-	$xAxis.="'$month/$day', ";
-	$yAxis.="$counted, ";
+	$total = $row['total'];
+	$month = $row['month'];
+	$day = $row['day'];
+	$key = sprintf("%d/%02d",$month,$day);
+	if ( isset($seriesClosed[$key]) ) // SQL time wraps to +1 days
+		$seriesClosed[$key] = $total;
 }
 
-#$yAxis=strrev($yAxis);
-#$xAxis=strrev($xAxis);
-$xAxis=substr($xAxis,0,-2);
-$yAxis=substr($yAxis,0,-2);
-#echo $yAxis;
-#echo "<br>";
-#echo $xAsis;
+foreach($seriesClosed as $value)
+{
+	$closedAxis .= "$value,";
+}
+$closedAxis = substr($closedAxis,0,-1);
+
+
 $theAverageString="";
-
-while ($ii < $i)
+for($j = 0; $j < $maxDays; $j++)
 {
-	$theAverageString.="$theAverage, ";
-	$ii++;
+	$theAverageString.="$theAverage,";
 }
-$theAverageString=substr($theAverageString,0,-2);
+$theAverageString=substr($theAverageString,0,-1);
 
+
+//***************************************
+// Opened Tickets (were created during time period)
+//***************************************
+$query1 = "
+SELECT
+	COUNT(HD_TICKET.ID) as total,
+	MONTH(CREATED) as month,
+	DAY(CREATED) as day,
+	YEAR(CREATED) as year
+FROM
+	HD_TICKET INNER JOIN
+	HD_STATUS ON HD_TICKET.HD_STATUS_ID = HD_STATUS.ID
+WHERE
+	(HD_TICKET.HD_QUEUE_ID = $mainQueueID)
+	AND (HD_STATUS.STATE LIKE '%Closed%')
+	AND (
+		(HD_STATUS.NAME NOT LIKE '%spam%')
+		AND (HD_STATUS.NAME NOT LIKE '%Server Status Report%')
+	)
+	AND (CREATED >= ( CURDATE() - INTERVAL $maxDays DAY ))
+GROUP BY
+	DATE(CREATED)
+";
+
+$result = mysql_query($query1);
+if (!$result) {
+    echo 'Could not run query: ' . mysql_error();
+    return;
+}
+
+while( ($row = mysql_fetch_assoc($result)) )
+{
+	$total = $row['total'];
+	$month = $row['month'];
+	$day = $row['day'];
+	$key = sprintf("%d/%02d",$month,$day);
+	if ( isset($seriesOpened[$key]) ) // SQL time wraps to +1 days
+		$seriesOpened[$key] = $total;
+}
+
+foreach($seriesOpened as $value)
+{
+	$openedAxis .= "$value,";
+}
+$openedAxis = substr($openedAxis,0,-1);
 ?>
 
 
@@ -72,7 +135,7 @@ $theAverageString=substr($theAverageString,0,-2);
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>Tickets closed all Queues</title>
+		<title>Tickets Closed All Queues</title>
 
 		<script type="text/javascript" src="includes/js/jquery.min.js"></script>
 		<script type="text/javascript">
@@ -87,7 +150,7 @@ $(function () {
                 marginBottom: 25
             },
             title: {
-                text: 'Tickets closed all Queues, last 30 days',
+                text: 'Tickets Closed All Queues, last <?php echo $maxDays; ?> days',
                 x: -20 //center
             },
             subtitle: {
@@ -109,8 +172,8 @@ $(function () {
             },
             tooltip: {
                 formatter: function() {
-                        return '<b>'+ this.series.name +'</b><br/>'+
-                        this.x +': '+ this.y +' closed';
+						return '<b>'+ this.series.name +'</b><br/>'+
+						this.x +': '+ this.y + (this.series.name=='Tickets Opened'?' Opened':' Closed');
                 }
             },
             legend: {
@@ -123,13 +186,16 @@ $(function () {
             },
             series: [{
                 name: 'Tickets Closed',
-                data: [<?php echo $yAxis ?>]
-		}, {
-		name: 'Average Closed',
-		data: [<?php echo $theAverageString ?>]
-
-            
-            }]
+                data: [<?php echo $closedAxis ?>],
+				lineWidth: 5
+			}, {
+				name: 'Average Closed',
+				data: [<?php echo $theAverageString ?>]
+			}, {
+				name: 'Tickets Opened',
+				data: [<?php echo $openedAxis ?>],
+				lineWidth: 1
+			}]
         });
     });
     
