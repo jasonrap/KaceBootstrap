@@ -355,7 +355,7 @@ $(function () {
                 align: 'right',
                 verticalAlign: 'top',
                 x: -10,
-                y: 100,
+                y: 45,
                 borderWidth: 0
             },
             series: [{
